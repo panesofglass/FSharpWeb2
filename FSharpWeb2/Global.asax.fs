@@ -1,28 +1,13 @@
 namespace FSharpWeb2
 
+open Owin
 open System
 open System.Net.Http
 open System.Web
 open System.Web.Http
 open System.Web.Mvc
 open System.Web.Routing
-open System.Web.Optimization
-
-type BundleConfig() =
-    static member RegisterBundles (bundles:BundleCollection) =
-        bundles.Add(ScriptBundle("~/bundles/jquery").Include([|"~/Scripts/jquery-{version}.js"|]))
-
-        // Use the development version of Modernizr to develop with and learn from. Then, when you're
-        // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
-        bundles.Add(ScriptBundle("~/bundles/modernizr").Include([|"~/Scripts/modernizr-*"|]))
-
-        bundles.Add(ScriptBundle("~/bundles/bootstrap").Include(
-                        "~/Scripts/bootstrap.js",
-                        "~/Scripts/respond.js"))
-
-        bundles.Add(StyleBundle("~/Content/css").Include(
-                        "~/Content/bootstrap.css",
-                        "~/Content/site.css"))
+open Microsoft.Owin
 
 /// Route for ASP.NET MVC applications
 type Route = { 
@@ -37,16 +22,6 @@ type HttpRoute = {
 type Global() =
     inherit System.Web.HttpApplication() 
 
-    static member RegisterWebApi(config: HttpConfiguration) =
-        // Configure routing
-        config.MapHttpAttributeRoutes()
-        config.Routes.MapHttpRoute(
-            "DefaultApi", // Route name
-            "api/{controller}/{id}", // URL with parameters
-            { controller = "{controller}"; id = RouteParameter.Optional } // Parameter defaults
-        ) |> ignore
-        // Additional Web API settings
-
     static member RegisterFilters(filters: GlobalFilterCollection) =
         filters.Add(new HandleErrorAttribute())
 
@@ -60,7 +35,24 @@ type Global() =
 
     member x.Application_Start() =
         AreaRegistration.RegisterAllAreas()
-        GlobalConfiguration.Configure(Action<_> Global.RegisterWebApi)
         Global.RegisterFilters(GlobalFilters.Filters)
         Global.RegisterRoutes(RouteTable.Routes)
-        BundleConfig.RegisterBundles BundleTable.Bundles
+
+type Startup() =
+    member x.Configuration(app: IAppBuilder) =
+        let config = new HttpConfiguration()
+        // Configure routing
+        config.MapHttpAttributeRoutes()
+        config.Routes.MapHttpRoute(
+            "DefaultApi", // Route name
+            "api/{controller}/{id}", // URL with parameters
+            { controller = "{controller}"; id = RouteParameter.Optional } // Parameter defaults
+        ) |> ignore
+
+        app .UseWebApi(config)
+            .UseErrorPage()
+            .UseWelcomePage(PathString("/hello"))
+            |> ignore
+
+[<assembly:OwinStartup(typeof<Startup>)>]
+do()
