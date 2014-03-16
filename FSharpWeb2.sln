@@ -8,6 +8,19 @@ EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "WindowsAzure1", "WindowsAzure1\WindowsAzure1.ccproj", "{CCCB7F19-0387-4ADC-BB9E-6A287953E06B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{711A0478-56F0-47B3-BC29-C31E013BD4D3}"
+	ProjectSection(SolutionItems) = preProject
+		build.cmd = build.cmd
+		build.fsx = build.fsx
+		LICENSE.txt = LICENSE.txt
+		RELEASE_NOTES.md = RELEASE_NOTES.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FF9EC89F-04D9-4004-81A0-8B94029756CE}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpTest1", "FSharpTest1\FSharpTest1.fsproj", "{9C115CD3-1108-4651-A7CF-F42F8DAF636E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +36,10 @@ Global
 		{CCCB7F19-0387-4ADC-BB9E-6A287953E06B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCCB7F19-0387-4ADC-BB9E-6A287953E06B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCCB7F19-0387-4ADC-BB9E-6A287953E06B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C115CD3-1108-4651-A7CF-F42F8DAF636E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C115CD3-1108-4651-A7CF-F42F8DAF636E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C115CD3-1108-4651-A7CF-F42F8DAF636E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C115CD3-1108-4651-A7CF-F42F8DAF636E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

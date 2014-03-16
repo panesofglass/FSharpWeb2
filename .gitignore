@@ -34,3 +34,4 @@ nuget/
 packages/
 test/
 .build/
+RELEASE_NOTES.html

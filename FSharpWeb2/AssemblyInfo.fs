@@ -1,22 +1,12 @@
-module FSharpWeb2.AssemblyInfo
+﻿namespace System
 open System.Reflection
-open System.Runtime.CompilerServices
 
+[<assembly: AssemblyTitleAttribute("FSharpWeb2")>]
+[<assembly: AssemblyProductAttribute("FSharpWeb2")>]
+[<assembly: AssemblyDescriptionAttribute("A functional web application DSL for ASP.NET Web API.")>]
+[<assembly: AssemblyVersionAttribute("1.0.1")>]
+[<assembly: AssemblyFileVersionAttribute("1.0.1")>]
+do ()
 
-[<assembly: AssemblyTitle("FSharpWeb2")>]
-[<assembly: AssemblyDescription("")>]
-[<assembly: AssemblyConfiguration("")>]
-[<assembly: AssemblyCompany("")>]
-[<assembly: AssemblyProduct("")>]
-[<assembly: AssemblyCopyright("")>]
-[<assembly: AssemblyTrademark("")>]
-
-// The assembly version has the format {Major}.{Minor}.{Build}.{Revision}
-
-[<assembly: AssemblyVersion("1.0.0.0")>]
-
-//[<assembly: AssemblyDelaySign(false)>]
-//[<assembly: AssemblyKeyFile("")>]
-
-()
-
+module internal AssemblyVersionInformation =
+    let [<Literal>] Version = "1.0.1"
