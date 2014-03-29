@@ -102,6 +102,59 @@ Target "RunTests" (fun _ ->
 )
 
 // --------------------------------------------------------------------------------------
+// Establish stage targets and set their respective Git repo
+
+let password = let p = getBuildParam "password" in if String.IsNullOrEmpty p then p else ":" + p
+
+let tempDevDir = "temp/dev"
+let gitUrlDev = sprintf "https://panesofglass%s@panesofglassdev.scm.azurewebsites.net:443/panesofglassdev.git" password
+
+let tempQADir = "temp/qa"
+let gitUrlQA = sprintf "https://panesofglass%s@panesofglassqa.scm.azurewebsites.net:443/panesofglassqa.git" password
+
+let tempProdDir = "temp/prod"
+let gitUrlProd = sprintf "https://panesofglass%s@panesofglass.scm.azurewebsites.net:443/panesofglass.git" password
+
+Target "DeployDev" (fun _ ->
+    CleanDir tempDevDir
+    Repository.clone "" gitUrlDev tempDevDir
+
+    fullclean tempDevDir
+    CopyRecursive "bin/_PublishedWebsites/FSharpWeb2" tempDevDir true |> tracefn "%A"
+    StageAll tempDevDir
+    Commit tempDevDir (sprintf "Update Dev environment to version %s" release.NugetVersion)
+    Branches.push tempDevDir
+)
+
+Target "PromoteQA" (fun _ ->
+    CleanDir tempDevDir
+    Repository.clone "" gitUrlDev tempDevDir
+
+    CleanDir tempQADir
+    Repository.clone "" gitUrlQA tempQADir
+
+    fullclean tempQADir
+    CopyRecursive tempDevDir tempQADir true |> tracefn "%A"
+    StageAll tempQADir
+    Commit tempQADir (sprintf "Update QA environment to version %s" release.NugetVersion)
+    Branches.push tempQADir
+)
+
+Target "PromoteProd" (fun _ ->
+    CleanDir tempQADir
+    Repository.clone "" gitUrlQA tempQADir
+
+    CleanDir tempProdDir
+    Repository.clone "" gitUrlProd tempProdDir
+
+    fullclean tempProdDir
+    CopyRecursive tempQADir tempProdDir true |> tracefn "%A"
+    StageAll tempProdDir
+    Commit tempProdDir (sprintf "Update Prod environment to version %s" release.NugetVersion)
+    Branches.push tempProdDir
+)
+
+// --------------------------------------------------------------------------------------
 // Run all targets by default. Invoke 'build <Target>' to override
 
 Target "All" DoNothing
@@ -118,7 +171,7 @@ Target "All" DoNothing
 "Build"
   ==> "BuildTests"
   ==> "RunTests"
+  =?> ("DeployDev", not (String.IsNullOrEmpty password))
   ==> "All"
 
 RunTargetOrDefault "All"
-
