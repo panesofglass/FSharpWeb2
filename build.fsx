@@ -106,13 +106,13 @@ Target "RunTests" (fun _ ->
 
 let password = let p = getBuildParam "password" in if String.IsNullOrEmpty p then p else ":" + p
 
-let tempDevDir = "temp/dev"
+let tempDevDir = "temp/a"
 let gitUrlDev = sprintf "https://panesofglass%s@panesofglassdev.scm.azurewebsites.net:443/panesofglassdev.git" password
 
-let tempQADir = "temp/qa"
+let tempQADir = "temp/b"
 let gitUrlQA = sprintf "https://panesofglass%s@panesofglassqa.scm.azurewebsites.net:443/panesofglassqa.git" password
 
-let tempProdDir = "temp/prod"
+let tempProdDir = "temp/c"
 let gitUrlProd = sprintf "https://panesofglass%s@panesofglass.scm.azurewebsites.net:443/panesofglass.git" password
 
 Target "DeployDev" (fun _ ->
@@ -129,6 +129,7 @@ Target "DeployDev" (fun _ ->
 Target "PromoteQA" (fun _ ->
     CleanDir tempDevDir
     Repository.clone "" gitUrlDev tempDevDir
+    DeleteDir (tempDevDir + "/.git")
 
     CleanDir tempQADir
     Repository.clone "" gitUrlQA tempQADir
@@ -143,6 +144,7 @@ Target "PromoteQA" (fun _ ->
 Target "PromoteProd" (fun _ ->
     CleanDir tempQADir
     Repository.clone "" gitUrlQA tempQADir
+    DeleteDir (tempQADir + "/.git")
 
     CleanDir tempProdDir
     Repository.clone "" gitUrlProd tempProdDir
