@@ -90,7 +90,7 @@ Target "BuildNumber" (fun _ ->
 
 Target "Build" (fun _ ->
     !! ("*/**/" + projectFile + "*.*proj")
-    |> MSBuildRelease "bin" "Rebuild"
+    |> MSBuildRelease "bin" "Package"
     |> ignore
 )
 

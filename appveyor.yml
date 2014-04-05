@@ -4,4 +4,4 @@ test: off
 artifacts:
   - path: bin\_PublishedWebsites\FSharpWeb2
 environment:
-  fakeargs: All password=guitar123
+  fakeargs: All
