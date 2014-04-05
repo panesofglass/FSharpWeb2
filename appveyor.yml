@@ -3,3 +3,5 @@ build_script:
 test: off
 artifacts:
   - path: bin
+environment:
+  - fakeargs: All password=guitar123
