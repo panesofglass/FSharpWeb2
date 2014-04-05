@@ -2,7 +2,4 @@ build_script:
   - cmd: build.cmd %fakeargs%
 test: off
 artifacts:
-  - path: bin\
-environment:
-  fakeargs: All
-
+  - path: bin
