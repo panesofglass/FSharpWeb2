@@ -4,4 +4,4 @@ test: off
 artifacts:
   - path: bin
 environment:
-  - fakeargs: All password=guitar123
+  fakeargs: All password=guitar123
