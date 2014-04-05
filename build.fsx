@@ -90,7 +90,7 @@ Target "BuildNumber" (fun _ ->
 
 Target "Build" (fun _ ->
     !! ("*/**/" + projectFile + "*.*proj")
-    |> MSBuildReleaseExt "bin" ["PackageAsSingleFile","True"] "Package"
+    |> MSBuildReleaseExt "bin" ["PackageLocation","FSharpWeb2.zip";"PackageAsSingleFile","True"] "Package"
     |> ignore
 )
 
