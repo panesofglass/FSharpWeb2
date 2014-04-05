@@ -2,8 +2,8 @@
 // FAKE build script 
 // --------------------------------------------------------------------------------------
 
-#r "packages/FAKE/tools/FakeLib.dll"
-#r "packages/FAKE/tools/NuGet.Core.dll"
+#I "packages/FAKE/tools"
+#r "FakeLib.dll"
 #load "packages/SourceLink.Fake/tools/SourceLink.Tfs.fsx"
 open System
 open System.IO
@@ -34,6 +34,7 @@ let summary = "A functional web application DSL for ASP.NET Web API."
 // File system information 
 // (<projectFile>.*proj is built during the building process)
 let projectFile = "FSharpWeb2"
+
 // Pattern specifying assemblies to be tested using NUnit
 let testFile = "FSharpTest1"
 
@@ -43,7 +44,13 @@ let testFile = "FSharpTest1"
 
 // Read additional information from the release notes document
 Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
+let (!!) includes = (!! includes).SetBaseDirectory __SOURCE_DIRECTORY__
+
 let release = parseReleaseNotes (IO.File.ReadAllLines "RELEASE_NOTES.md")
+let isAppVeyorBuild = environVar "APPVEYOR" <> null
+let releaseVersion =
+    if isAppVeyorBuild then sprintf "%s-a%s" release.AssemblyVersion (DateTime.UtcNow.ToString "yyMMddHHmm")
+    else release.AssemblyVersion
 
 // Generate assembly info files with the right version & up-to-date information
 Target "AssemblyInfo" (fun _ ->
@@ -67,10 +74,18 @@ Target "Clean" (fun _ ->
 // --------------------------------------------------------------------------------------
 // Build library & test project
 
+Target "BuildVersion" (fun _ ->
+    Shell.Exec("appveyor", sprintf "UpdateBuild -Version \"%s\"" releaseVersion) |> ignore
+)
+
 Target "BuildNumber" (fun _ ->
+    #if MONO
+    ()
+    #else
     use tb = getTfsBuild()
-    tb.Build.BuildNumber <- sprintf "FSharpWeb2.%s.%s" release.AssemblyVersion tb.Build.BuildNumber
+    tb.Build.BuildNumber <- sprintf "FSharpWeb2.%s.%s" releaseVersion tb.Build.BuildNumber
     tb.Build.Save()
+    #endif
 )
 
 Target "Build" (fun _ ->
@@ -163,17 +178,16 @@ Target "All" DoNothing
 
 "Clean"
   ==> "CopyLicense"
-  ==> "RestorePackages"
-
-"RestorePackages"
+  =?> ("BuildVersion", isAppVeyorBuild)
   =?> ("BuildNumber", isTfsBuild)
+  ==> "RestorePackages"
   ==> "AssemblyInfo"
   ==> "Build"
 
 "Build"
   ==> "BuildTests"
   ==> "RunTests"
-  =?> ("DeployDev", not (String.IsNullOrEmpty password))
+  =?> ("DeployDev", hasBuildParam password)
   ==> "All"
 
 RunTargetOrDefault "All"
