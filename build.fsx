@@ -138,7 +138,7 @@ Target "DeployDev" (fun _ ->
     CopyRecursive "bin/_PublishedWebsites/FSharpWeb2" tempDevDir true |> tracefn "%A"
     StageAll tempDevDir
     Commit tempDevDir (sprintf "Update Dev environment to version %s" release.NugetVersion)
-    Branches.push tempDevDir
+    Branches.pushBranch tempDevDir "origin" "master"
 )
 
 Target "PromoteQA" (fun _ ->
@@ -153,7 +153,7 @@ Target "PromoteQA" (fun _ ->
     CopyRecursive tempDevDir tempQADir true |> tracefn "%A"
     StageAll tempQADir
     Commit tempQADir (sprintf "Update QA environment to version %s" release.NugetVersion)
-    Branches.push tempQADir
+    Branches.pushBranch tempQADir "origin" "master"
 )
 
 Target "PromoteProd" (fun _ ->
@@ -168,7 +168,7 @@ Target "PromoteProd" (fun _ ->
     CopyRecursive tempQADir tempProdDir true |> tracefn "%A"
     StageAll tempProdDir
     Commit tempProdDir (sprintf "Update Prod environment to version %s" release.NugetVersion)
-    Branches.push tempProdDir
+    Branches.pushBranch tempProdDir "origin" "master"
 )
 
 // --------------------------------------------------------------------------------------
