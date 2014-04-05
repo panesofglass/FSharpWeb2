@@ -2,6 +2,6 @@ build_script:
   - cmd: build.cmd %fakeargs%
 test: off
 artifacts:
-  - path: bin
+  - path: bin\_PublishedWebsites\FSharpWeb2
 environment:
   fakeargs: All password=guitar123
