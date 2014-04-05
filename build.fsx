@@ -187,7 +187,7 @@ Target "All" DoNothing
 "Build"
   ==> "BuildTests"
   ==> "RunTests"
-  =?> ("DeployDev", hasBuildParam password)
+  =?> ("DeployDev", (!String.IsNullOrEmpty password))
   ==> "All"
 
 RunTargetOrDefault "All"
