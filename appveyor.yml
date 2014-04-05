@@ -2,6 +2,6 @@ build_script:
   - cmd: build.cmd %fakeargs%
 test: off
 artifacts:
-  - path: bin\_PublishedWebsites\FSharpWeb2
+  - path: bin\_PublishedWebsites\FSharpWeb2_package\*.zip
 environment:
   fakeargs: All
